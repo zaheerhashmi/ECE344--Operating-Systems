@@ -380,6 +380,7 @@ showmenu(const char *name, const char *x[])
 static const char *opsmenu[] = {
 	"[s]       Shell                     ",
 	"[p]       Other program             ",
+	"[dbflags] Debug flags               ",
 	"[mount]   Mount a filesystem        ",
 	"[unmount] Unmount a filesystem      ",
 	"[bootfs]  Set \"boot\" filesystem     ",
@@ -391,6 +392,8 @@ static const char *opsmenu[] = {
 	"[q]       Quit and shut down        ",
 	NULL
 };
+
+
 
 static
 int
@@ -467,6 +470,47 @@ cmd_mainmenu(int n, char **a)
 	return 0;
 }
 
+//Debug Flags Struct //
+static const char *dbflagsmen[] = {
+	"[df 1 on/off]        DB_LOCORE   ",
+	"[df 2 on/off]        DB_SYSCALL  ",
+	"[df 3 on/off]        DB_INTERRUPT",
+	"[df 4 on/off]        DB_DEVICE   ",
+	"[df 5 on/off]        DB_THREADS  ",
+	"[df 6 on/off]        DB_VM       ",
+	"[df 7 on/off]        DB_EXEC     ",
+	"[df 8 on/off]        DB_VFS      ",
+	"[df 9 on/off]        DB_SFS      ",
+	"[df 10 on/off]       DB_NET      ",
+	"[df 11 on/off]       DB_NETFS    ",
+	"[df 12 on/off]       DB_KMALLOC  ",
+	NULL
+};
+
+static
+int
+cmd_dbflagsmenu(int n, char **a)
+{
+	(void)n;
+	(void)a;
+
+	showmenu("OS/161 Debug Flags",dbflagsmen);
+	kprintf("Current value of dbflags is 0x%x \n",dbflags);
+	return 0;
+}
+
+// Flag Functions//
+static
+int
+cmd_df_1_on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+    dbflags = DB_LOCORE;
+    kprintf("Current value of dbflags is 0x%x \n",dbflags);
+	return 0;
+}
+
 ////////////////////////////////////////
 //
 // Command table.
@@ -486,6 +530,7 @@ static struct {
 	{ "s",		cmd_shell },
 	{ "p",		cmd_prog },
 	{ "mount",	cmd_mount },
+	{ "dbflags", cmd_dbflagsmenu},
 	{ "unmount",	cmd_unmount },
 	{ "bootfs",	cmd_bootfs },
 	{ "pf",		printfile },
@@ -496,6 +541,9 @@ static struct {
 	{ "q",		cmd_quit },
 	{ "exit",	cmd_quit },
 	{ "halt",	cmd_quit },
+
+	/*debug flags command functions*/
+	{ "df 1 on", cmd_df_1_on},
 
 #if OPT_SYNCHPROBS
 	/* in-kernel synchronization problems */
@@ -581,11 +629,9 @@ cmd_dispatch(char *cmd)
 			kprintf("Operation took %lu.%09lu seconds\n",
 				(unsigned long) secs,
 				(unsigned long) nsecs);
-
 			return result;
 		}
 	}
-
 	kprintf("%s: Command not found\n", args[0]);
 	return EINVAL;
 }
