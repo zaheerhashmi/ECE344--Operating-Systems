@@ -601,19 +601,19 @@ cmd_dispatch(char *cmd)
 	for (word = strtok_r(cmd, " \t", &context);
 	     word != NULL;
 	     word = strtok_r(NULL, " \t", &context)) {
-
 		if (nargs >= MAXMENUARGS) {
 			kprintf("Command line has too many words\n");
 			return E2BIG;
 		}
 		args[nargs++] = word;
 	}
-
 	if (nargs==0) {
 		return 0;
 	}
-
+//	char *check[MAXMENUARGS] = args;
+	
 	for (i=0; cmdtable[i].name; i++) {
+		
 		if (*cmdtable[i].name && !strcmp(args[0], cmdtable[i].name)) {
 			assert(cmdtable[i].func!=NULL);
 
@@ -631,6 +631,24 @@ cmd_dispatch(char *cmd)
 				(unsigned long) nsecs);
 			return result;
 		}
+	/*	else if ( args == check && strcmp(store, cmdtable[i].name)) {
+			kprintf("entering first if");
+			assert(cmdtable[i].func!=NULL);
+
+			gettime(&beforesecs, &beforensecs);
+
+			result = cmdtable[i].func(nargs, args);
+
+			gettime(&aftersecs, &afternsecs);
+			getinterval(beforesecs, beforensecs,
+				    aftersecs, afternsecs,
+				    &secs, &nsecs);
+
+			kprintf("Operation took %lu.%09lu seconds\n",
+				(unsigned long) secs,
+				(unsigned long) nsecs);
+			return result;
+		} */
 	}
 	kprintf("%s: Command not found\n", args[0]);
 	return EINVAL;
@@ -658,7 +676,6 @@ menu_execute(char *line, int isargs)
 		if (isargs) {
 			kprintf("OS/161 kernel: %s\n", command);
 		}
-
 		result = cmd_dispatch(command);
 		if (result) {
 			kprintf("Menu command failed: %s\n", strerror(result));
