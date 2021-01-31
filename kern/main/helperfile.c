@@ -385,5 +385,16 @@ OS/161 Debug flags
 #define DB_KMALLOC     0x800
 
 
+static
+int
+cmd_dfinvalid(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	kprintf("EXPECTING: Usage: df nr on\/off \n");
+	return 0;
+}
+
+
 
 
