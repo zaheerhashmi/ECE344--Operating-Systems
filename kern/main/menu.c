@@ -499,6 +499,254 @@ cmd_dbflagsmenu(int n, char **a)
 	return 0;
 }
 
+//DEBUG FLAG FUNCTIONS//
+
+//ON functions//
+
+static
+int
+cmd_df1on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = DB_LOCORE + dbflags;
+	return 0;
+}
+
+static
+int
+cmd_df2on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = DB_SYSCALL + dbflags;
+	return 0;
+}
+
+static
+int
+cmd_df3on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = DB_INTERRUPT + dbflags;
+	return 0;
+}
+
+static
+int
+cmd_df4on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = DB_DEVICE + dbflags;
+	return 0;
+}
+
+static
+int
+cmd_df5on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = DB_THREADS + dbflags;
+	return 0;
+}
+
+static
+int
+cmd_df6on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = DB_VM + dbflags;
+	return 0;
+}
+
+static
+int
+cmd_df7on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = DB_EXEC + dbflags;
+	return 0;
+}
+
+static
+int
+cmd_df8on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = DB_VFS + dbflags;
+	return 0;
+}
+
+static
+int
+cmd_df9on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = DB_SFS + dbflags;
+	return 0;
+}
+
+static
+int
+cmd_df10on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = DB_NET + dbflags;
+	return 0;
+}
+
+static
+int
+cmd_df11on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags =  DB_NETFS + dbflags;
+	return 0;
+}
+
+static
+int
+cmd_df12on(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = DB_KMALLOC + dbflags;
+	return 0;
+}
+
+//OFF FUNCTIONS//
+
+
+static
+int
+cmd_df1off(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = dbflags - DB_LOCORE;
+	return 0;
+}
+
+static
+int
+cmd_df2off(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = dbflags - DB_SYSCALL;
+	return 0;
+}
+
+static
+int
+cmd_df3off(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = dbflags - DB_INTERRUPT;
+	return 0;
+}
+
+static
+int
+cmd_df4off(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = dbflags - DB_DEVICE;
+	return 0;
+}
+
+static
+int
+cmd_df5off(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = dbflags - DB_THREADS;
+	return 0;
+}
+
+static
+int
+cmd_df6off(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = dbflags - DB_VM;
+	return 0;
+}
+
+static
+int
+cmd_df7off(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = dbflags - DB_EXEC;
+	return 0;
+}
+
+static
+int
+cmd_df8off(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = dbflags - DB_VFS;
+	return 0;
+}
+
+static
+int
+cmd_df9off(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = dbflags - DB_SFS;
+	return 0;
+}
+
+static
+int
+cmd_df10off(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = dbflags - DB_NET;
+	return 0;
+}
+
+static
+int
+cmd_df11off(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = dbflags - DB_NETFS;
+	return 0;
+}
+
+static
+int
+cmd_df12off(int n, char **a)
+{
+	(void)n;
+	(void)a;
+	dbflags = dbflags - DB_KMALLOC;
+	return 0;
+}
+
+
 // Flag Functions//
 static
 int
@@ -541,6 +789,30 @@ static struct {
 	{ "q",		cmd_quit },
 	{ "exit",	cmd_quit },
 	{ "halt",	cmd_quit },
+	{ "df1on",	cmd_df1on },
+	{ "df2on",	cmd_df2on },
+	{ "df3on",	cmd_df3on },
+	{ "df4on",	cmd_df4on },
+	{ "df5on",	cmd_df5on },
+	{ "df6on",	cmd_df6on },
+	{ "df7on",	cmd_df7on },
+	{ "df8on",	cmd_df8on },
+	{ "df9on",	cmd_df9on},
+	{ "df10on",	cmd_df10on },
+	{ "df11on",	cmd_df11on },
+	{ "df12on",	cmd_df12on },
+	{ "df1off",	cmd_df1off },
+	{ "df2off",	cmd_df2off },
+	{ "df3off",	cmd_df3off },
+	{ "df4off",	cmd_df4off },
+	{ "df5off",	cmd_df5off },
+	{ "df6off",	cmd_df6off },
+	{ "df7off",	cmd_df7off },
+	{ "df8off",	cmd_df8off },
+	{ "df9off",	cmd_df9off },
+	{ "df10off",cmd_df10off },
+	{ "df11off",cmd_df11off },
+	{ "df12off",cmd_df12off },
 
 	/*debug flags command functions*/
 	{ "df 1 on", cmd_df_1_on},
@@ -703,16 +975,266 @@ menu_execute(char *line, int isargs)
  *      "mount sfs lhd0; bootfs lhd0; s"
  */
 
+// DF_ON//
+	char df_1on[] = "df1on";
+	char df_2on[] = "df2on";
+	char df_3on[] = "df3on";
+	char df_4on[] = "df4on";
+	char df_5on[] = "df5on";
+	char df_6on[] = "df6on";
+	char df_7on[] = "df7on";
+	char df_8on[] = "df8on";
+	char df_9on[] = "df9on";
+	char df_10on[] = "df10on";
+	char df_11on[] = "df11on";
+	char df_12on[] = "df12on";
+
+	// DF_OFF//
+
+	char df_1off[] = "df1off";
+	char df_2off[] = "df2off";
+	char df_3off[] = "df3off";
+	char df_4off[] = "df4off";
+	char df_5off[] = "df5off";
+	char df_6off[] = "df6off";
+	char df_7off[] = "df7off";
+	char df_8off[] = "df8off";
+	char df_9off[] = "df9off";
+	char df_10off[] = "df10off";
+	char df_11off[] = "df11off";
+	char df_12off[] = "df12off";
+
+
+char* db_proc( char* cmd);
+char* db_proc( char* cmd)
+{
+
+	// DF ON//
+	char df1on[] = "df 1 on";
+	char df2on[] = "df 2 on";
+	char df3on[] = "df 3 on";
+	char df4on[] = "df 4 on";
+	char df5on[] = "df 5 on";
+	char df6on[] = "df 6 on";
+	char df7on[] = "df 7 on";
+	char df8on[] = "df 8 on";
+	char df9on[] = "df 9 on";
+	char df10on[] = "df 10 on";
+	char df11on[] = "df 11 on";
+	char df12on[] = "df 12 on";
+// DF OFF //
+	char df1off[] = "df 1 off";
+	char df2off[] = "df 2 off";
+	char df3off[] = "df 3 off";
+	char df4off[] = "df 4 off";
+	char df5off[] = "df 5 off";
+	char df6off[] = "df 6 off";
+	char df7off[] = "df 7 off";
+	char df8off[] = "df 8 off";
+	char df9off[] = "df 9 off";
+	char df10off[] = "df 10 off";
+	char df11off[] = "df 11 off";
+	char df12off[] = "df 12 off";
+
+	// Checking argument // 
+	int df1on_ = strcmp(cmd, df1on);
+	int df1off_ = strcmp(cmd, df1off);
+
+	int df2on_ = strcmp(cmd, df2on);
+	int df2off_ = strcmp(cmd, df2off);
+
+	int df3on_ = strcmp(cmd, df3on);
+	int df3off_ = strcmp(cmd, df3off);
+
+	int df4on_ = strcmp(cmd, df4on);
+	int df4off_ = strcmp(cmd, df4off);
+
+	int df5on_ = strcmp(cmd, df5on);
+	int df5off_ = strcmp(cmd, df5off);
+
+	int df6on_ = strcmp(cmd, df6on);
+	int df6off_ = strcmp(cmd, df6off);
+
+	int df7on_ = strcmp(cmd, df7on);
+	int df7off_ = strcmp(cmd, df7off);
+
+	int df8on_ = strcmp(cmd, df8on);
+	int df8off_ = strcmp(cmd, df8off);
+
+	int df9on_ = strcmp(cmd, df9on);
+	int df9off_ = strcmp(cmd, df9off);
+
+	int df10on_ = strcmp(cmd, df10on);
+	int df10off_ = strcmp(cmd, df10off);
+
+	int df11on_ = strcmp(cmd, df11on);
+	int df11off_ = strcmp(cmd, df11off);
+
+	int df12on_ = strcmp(cmd, df12on);
+	int df12off_ = strcmp(cmd, df12off);
+
+		
+		// DF1
+		if(df1on_ == 0){
+			menu_execute(df_1on,0);
+		}
+
+		else if(df1off_ == 0){
+			menu_execute (df_1off,0);
+		}
+
+		// DF2
+		
+		else if(df2on_ == 0){
+			menu_execute(df_2on,0);
+		}
+
+		
+		else if(df2off_ == 0){
+			menu_execute(df_2off,0);
+		}
+
+		// DF3
+		
+		else if(df3on_ == 0){
+			menu_execute(df_3on,0);
+		}
+
+		
+		else if(df3off_ == 0){
+			menu_execute(df_3off,0);
+		}
+
+		// DF4
+		
+		else if(df4on_ == 0){
+			menu_execute(df_4on,0);
+		}
+
+		
+		else if(df4off_ == 0){
+			menu_execute(df_4off,0);
+		}
+
+		// DF5
+		
+		else if(df5on_ == 0){
+			menu_execute(df_5on,0);
+		}
+
+		
+		else if(df5off_ == 0){
+			menu_execute(df_5off,0);
+		}
+
+		// DF6
+		
+		else if(df6on_ == 0){
+			menu_execute(df_6on,0);
+		}
+
+		
+		else if(df6off_ == 0){
+			menu_execute(df_6off,0);
+		}
+
+		// DF7
+		
+		else if(df7on_ == 0){
+			menu_execute(df_7on,0);
+		}
+
+		
+		else if(df7off_ == 0){
+			menu_execute(df_7off,0);
+		}
+
+		// DF8
+		
+		else if(df8on_ == 0){
+			menu_execute(df_8on,0);
+		}
+
+		
+		else if(df8off_ == 0){
+			menu_execute(df_8off,0);
+		}
+
+		// DF9
+		
+		else if(df9on_ == 0){
+			menu_execute(df_9on,0);
+		}
+
+		
+		else if(df9off_ == 0){
+			menu_execute(df_9off,0);
+		}
+
+		// DF10
+		
+		else if(df10on_ == 0){
+			menu_execute(df_10on,0);
+		}
+
+		
+		else if(df10off_ == 0){
+			menu_execute(df_10off,0);
+		}
+
+		// DF11
+		
+		else if(df11on_ == 0){
+			menu_execute(df_11on,0);
+		}
+
+		
+		else if(df11off_ == 0){
+			menu_execute(df_11off,0);
+		}
+
+		// DF12
+		
+		else if(df12on_ == 0){
+			menu_execute(df_12on,0);
+		}
+
+		
+		else if(df12off_ == 0){
+			menu_execute(df_12off,0);
+		}
+
+	
+	else {menu_execute(cmd,0);}
+	return (NULL);
+	
+}
+
 void
 menu(char *args)
 {
 	char buf[64];
+	//char *dbarg;
 
 	menu_execute(args, 1);
 
 	while (1) {
 		kprintf("OS/161 kernel [? for menu]: ");
 		kgets(buf, sizeof(buf));
-		menu_execute(buf, 0);
+
+		//if(buf[0] == 'd' && buf[1] == 'f'){
+			//kprintf("df processing function called \n");
+			//dbarg = db_proc(buf);
+		//	menu_execute(dbarg,0);
+		 db_proc(buf);
+		//}	
+
+		//if(dbarg != NULL){
+		//	menu_execute(dbarg,0);
+	//	}	
+
+	//	else{
+	//	menu_execute(buf, 0);
+	//	}
 	}
 }
