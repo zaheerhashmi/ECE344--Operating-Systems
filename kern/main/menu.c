@@ -746,18 +746,17 @@ cmd_df12off(int n, char **a)
 	return 0;
 }
 
-
-// Flag Functions//
 static
 int
-cmd_df_1_on(int n, char **a)
+cmd_dfinvalid(int n, char **a)
 {
 	(void)n;
 	(void)a;
-    dbflags = DB_LOCORE;
-    kprintf("Current value of dbflags is 0x%x \n",dbflags);
+	kprintf("EXPECTING: Usage: df nr on/off \n");
 	return 0;
 }
+
+
 
 ////////////////////////////////////////
 //
@@ -813,10 +812,7 @@ static struct {
 	{ "df10off",cmd_df10off },
 	{ "df11off",cmd_df11off },
 	{ "df12off",cmd_df12off },
-
-	/*debug flags command functions*/
-	{ "df 1 on", cmd_df_1_on},
-
+	{ "dfinval",cmd_dfinvalid},
 #if OPT_SYNCHPROBS
 	/* in-kernel synchronization problems */
 	{ "1a",		catmousesem },
@@ -1003,6 +999,9 @@ menu_execute(char *line, int isargs)
 	char df_10off[] = "df10off";
 	char df_11off[] = "df11off";
 	char df_12off[] = "df12off";
+
+	//DFINVALID//
+	char df_inval[] = "dfinval";
 
 
 char* db_proc( char* cmd);
@@ -1205,7 +1204,7 @@ char* db_proc( char* cmd)
 		}
 
 	
-	else {menu_execute(cmd,0);}
+	else {menu_execute(df_inval,0);}
 	return (NULL);
 	
 }
@@ -1214,7 +1213,7 @@ void
 menu(char *args)
 {
 	char buf[64];
-	//char *dbarg;
+	char *dbarg;
 
 	menu_execute(args, 1);
 
@@ -1222,19 +1221,14 @@ menu(char *args)
 		kprintf("OS/161 kernel [? for menu]: ");
 		kgets(buf, sizeof(buf));
 
-		//if(buf[0] == 'd' && buf[1] == 'f'){
+		if(buf[0] == 'd' && buf[1] == 'f'){
 			//kprintf("df processing function called \n");
-			//dbarg = db_proc(buf);
+			dbarg = db_proc(buf);
 		//	menu_execute(dbarg,0);
-		 db_proc(buf);
-		//}	
-
-		//if(dbarg != NULL){
-		//	menu_execute(dbarg,0);
-	//	}	
-
-	//	else{
-	//	menu_execute(buf, 0);
-	//	}
+		 
+		}	
+		else{
+		menu_execute(buf, 0);
+		}
 	}
 }
