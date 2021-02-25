@@ -10,6 +10,7 @@
 #include <curthread.h>
 #include <machine/spl.h>
 
+
 ////////////////////////////////////////////////////////////
 //
 // Semaphore.
@@ -31,7 +32,7 @@ sem_create(const char *namearg, int initial_count)
 		kfree(sem);
 		return NULL;
 	}
-
+	
 	sem->count = initial_count;
 	return sem;
 }
@@ -114,7 +115,8 @@ lock_create(const char *name)
 		return NULL;
 	}
 	
-	// add stuff here as needed
+	// Free = 1; Held = 0; 
+	lock->count = 1;
 	
 	return lock;
 }
@@ -122,9 +124,13 @@ lock_create(const char *name)
 void
 lock_destroy(struct lock *lock)
 {
+	int spl;
 	assert(lock != NULL);
 
-	// add stuff here as needed
+	spl = splhigh();
+	assert(thread_hassleepers(lock)==0);
+	splx(spl);
+	
 	
 	kfree(lock->name);
 	kfree(lock);
@@ -133,7 +139,18 @@ lock_destroy(struct lock *lock)
 void
 lock_acquire(struct lock *lock)
 {
-	// Write this
+	int spl;
+	assert(lock != NULL );
+
+	assert(in_interrupt == 0);
+
+	spl = splhigh();
+	while (lock->count==0) {
+		thread_sleep(lock);
+	}
+	assert(lock->count>0);
+	lock->count--;
+	splx(spl);
 
 	(void)lock;  // suppress warning until code gets written
 }
@@ -141,7 +158,13 @@ lock_acquire(struct lock *lock)
 void
 lock_release(struct lock *lock)
 {
-	// Write this
+	int spl;
+	assert(lock != NULL);
+	spl = splhigh();
+	lock->count++;
+	assert(lock->count>0);
+	thread_wakeup(lock);
+	splx(spl);
 
 	(void)lock;  // suppress warning until code gets written
 }
