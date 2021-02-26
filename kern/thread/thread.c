@@ -534,7 +534,6 @@ void
 thread_wakeup(const void *addr)
 {
 	int i, result;
-	
 	// meant to be called with interrupts off
 	assert(curspl>0);
 	

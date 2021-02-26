@@ -149,6 +149,7 @@ lock_acquire(struct lock *lock)
 	}
 	assert(lock->count>0);
 	lock->count--;
+	lock->lock_thread = curthread;
 	splx(spl);
 
 	(void)lock;  // suppress warning until code gets written
@@ -161,6 +162,7 @@ lock_release(struct lock *lock)
 	assert(lock != NULL);
 	spl = splhigh();
 	lock->count++;
+	lock->lock_thread = NULL;
 	assert(lock->count>0);
 	thread_wakeup(lock);
 	splx(spl);
@@ -171,11 +173,17 @@ lock_release(struct lock *lock)
 int
 lock_do_i_hold(struct lock *lock)
 {
-	
+	if(lock->lock_thread == curthread){
+		return 1;
+	}
 
+	else{
+		return 0;
+	}
+	
 	(void)lock;  // suppress warning until code gets written
 
-	return 1;    // dummy until code gets written
+	//return 1;    // dummy until code gets written
 }
 
 ////////////////////////////////////////////////////////////
@@ -207,26 +215,50 @@ cv_create(const char *name)
 void
 cv_destroy(struct cv *cv)
 {
+	int spl = splhigh();
 	assert(cv != NULL);
-
-	// add stuff here as needed
-	
 	kfree(cv->name);
 	kfree(cv);
+	splx(spl);
+
+	// add stuff here as needed
 }
 
 void
 cv_wait(struct cv *cv, struct lock *lock)
 {
+	int spl = splhigh();
 	// Write this
+	assert(cv != NULL);
+	assert(lock!=NULL);
+
+	lock_release(lock);
+	thread_sleep(cv);
+	splx(spl);
+	lock_acquire(lock);
+
+
+	
+	
+
 	(void)cv;    // suppress warning until code gets written
 	(void)lock;  // suppress warning until code gets written
 }
+
 
 void
 cv_signal(struct cv *cv, struct lock *lock)
 {
 	// Write this
+	int spl = splhigh();
+	assert(cv!= NULL);
+	assert(lock!=NULL);
+
+	lock_release(lock);
+	thread_wakeup(cv);
+
+	splx(spl);
+
 	(void)cv;    // suppress warning until code gets written
 	(void)lock;  // suppress warning until code gets written
 }
@@ -235,6 +267,12 @@ void
 cv_broadcast(struct cv *cv, struct lock *lock)
 {
 	// Write this
+	int spl = splhigh();
+	assert(cv != NULL);
+	lock_release(lock);
+	thread_wakeup(cv);
+	splx(spl);
 	(void)cv;    // suppress warning until code gets written
 	(void)lock;  // suppress warning until code gets written
 }
+
