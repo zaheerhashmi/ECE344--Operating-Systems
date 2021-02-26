@@ -117,7 +117,6 @@ lock_create(const char *name)
 	
 	// Free = 1; Held = 0; 
 	lock->count = 1;
-	
 	return lock;
 }
 
@@ -172,7 +171,7 @@ lock_release(struct lock *lock)
 int
 lock_do_i_hold(struct lock *lock)
 {
-	// Write this
+	
 
 	(void)lock;  // suppress warning until code gets written
 
