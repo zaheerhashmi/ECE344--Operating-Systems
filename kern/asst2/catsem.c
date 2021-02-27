@@ -31,6 +31,7 @@ struct semaphore *condstatus;
 // bowl_status: 0 means free to use; 1 means occupied// 
 int bowl_status[2]= {0,0}; 
 //int cat_flag = 0;
+struct lock* condlock;
 
 
 
@@ -62,10 +63,12 @@ catsem(void * unusedpointer,
        unsigned long catnumber)
 {
         
-        int spl = splhigh();
-        if(mouse->count == 0){
-        splx(spl);
-        thread_yield(); }
+       // int spl =
+        splhigh();
+        while(mouse->count < 2){
+       // splx(spl);
+        thread_yield(); 
+        }
 
         P(_bowl); // Get the bowl 
         P(cat);
@@ -128,10 +131,12 @@ mousesem(void * unusedpointer,
 {       
         // Check if a cat is eating if it is dont approach bowl; no cat is eating go to bowl//
 
-        int spl = splhigh();
-        if(cat->count == 0){
-        splx(spl);
-        thread_yield(); }
+     //  int spl =  
+       splhigh();
+        while(cat->count < 6){
+       // spl0();
+        thread_yield(); 
+      }
         
         
                 P(_bowl);
@@ -202,7 +207,7 @@ catmousesem(int nargs,
         bowl_1= sem_create("bowl_1",1);
         bowl_2 = sem_create("bowl_2",1);
         condstatus = sem_create("condstatus",1);
-   
+        condlock = lock_create("condlock");
         /*
          * Start NCATS catsem() threads.
          */
