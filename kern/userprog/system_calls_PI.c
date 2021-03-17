@@ -141,4 +141,9 @@ if(seconds != NULL){
 
 }
 
+void sys_exit(int exitcode){
+    kprintf("%d",exitcode);
+    thread_exit();
+}
+
 

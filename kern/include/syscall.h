@@ -19,5 +19,7 @@ int sys_sleep(int seconds, int* retval);
 
 int sys__time(time_t *seconds, int *nanoseconds, int *retval);
 
+void sys_exit(int exitcode);
+
 
 #endif /* _SYSCALL_H_ */
