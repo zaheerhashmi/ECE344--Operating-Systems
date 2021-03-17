@@ -90,6 +90,9 @@ mips_syscall(struct trapframe *tf)
 		err = sys_sleep(tf->tf_a0, &retval);
 		break;
 
+		case SYS___time:
+		err = sys__time((int *)tf->tf_a0 ,(int *)tf->tf_a1 ,&retval);
+
 	    default:
 		kprintf("Unknown syscall %d\n", callno);
 		err = ENOSYS;

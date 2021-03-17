@@ -4,6 +4,7 @@
 #include <kern/errno.h>
 #include <kern/unistd.h>
 #include <thread.h>
+#include <clock.h>
 
 int sys_write(int fd, const void *buf, size_t nbytes, int* retval){
 
@@ -95,6 +96,42 @@ int sys_sleep(int seconds,int *retval){
   clocksleep(seconds);
   *retval = 0;
   return 0;
+
+}
+
+int sys__time(time_t *seconds, int *nanoseconds, int *retval){
+
+  int kernSeconds;
+  int kernNanoseconds;
+  int copyError;
+
+  gettime((time_t *)&kernSeconds,(u_int32_t *)&kernNanoseconds);
+
+
+  // Ensure seconds and nano seconds are valid addresses // 
+
+  if(seconds != NULL){
+  copyError = copyout((void*)&kernSeconds,(void*)seconds,sizeof(int));
+    
+    if(copyError != 0){
+        return copyError;
+      }
+  }
+
+    if(nanoseconds != NULL){
+    copyError = copyout((void*)&kernNanoseconds,(userptr_t)nanoseconds,sizeof(int));
+    
+    if(copyError != 0){
+        return copyError;
+      }
+    }
+
+  *retval = kernSeconds;
+  return 0;
+  
+  
+
+  // Needs to write the obtained values to seconds and nanoseconds // 
 
 }
 
