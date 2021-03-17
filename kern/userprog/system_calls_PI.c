@@ -106,13 +106,18 @@ int sys__time(time_t *seconds, int *nanoseconds, int *retval){
   int copyError;
 
  
-  gettime((time_t *)&kernSeconds,(u_int32_t *)&kernNanoseconds);
+  gettime((int *)&kernSeconds,&kernNanoseconds);
 
-
+// if(seconds == NULL || nanoseconds == NULL ){
+ //*retval = -1
+ // return EFAULT;
+//}
+ 
   // Ensure seconds and nano seconds are valid addresses // 
 
-  if(seconds != NULL){
-  copyError = copyout((void*)&kernSeconds,(void*)seconds,sizeof(int));
+// Some times tester wants seconds sometimes nano seconds seperated the cases 
+if(seconds != NULL){
+  copyError = copyout(&kernSeconds,(void*)seconds,sizeof(int));
     
     if(copyError != 0){
         return copyError;
@@ -120,7 +125,7 @@ int sys__time(time_t *seconds, int *nanoseconds, int *retval){
   }
 
     if(nanoseconds != NULL){
-    copyError = copyout((void*)&kernNanoseconds,(userptr_t)nanoseconds,sizeof(int));
+    copyError = copyout(&kernNanoseconds,(void *)nanoseconds,sizeof(int));
     
     if(copyError != 0){
         return copyError;
