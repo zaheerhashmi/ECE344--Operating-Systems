@@ -105,6 +105,7 @@ int sys__time(time_t *seconds, int *nanoseconds, int *retval){
   int kernNanoseconds;
   int copyError;
 
+ 
   gettime((time_t *)&kernSeconds,(u_int32_t *)&kernNanoseconds);
 
 
