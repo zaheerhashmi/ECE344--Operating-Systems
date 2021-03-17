@@ -1,0 +1,72 @@
+General Tip: Commit code early and often
+Guidelines for naming variables: 
+1) Functions should follow this format: zaheer_hashmi
+2) Variables should follow this format: zaheerHashmi
+
+--------------------------------------------------------- CODE WALK THOURGH -----------------------------------------------------------------------
+kern/userprog directory: more files will be added as required 
+
+1. What are the ELF magic numbers?
+    ELF magic numbers are the first 4 bytes of a file and are used to identify a given ELF file.
+
+2. What is the difference between UIO_USERISPACE and UIO_USERSPACE? When should one use UIO_SYSSPACE instead?
+    UIO_USERISPACE and UIO_USERSPACE stand for user process code and user process data respectively. 
+    One should use UIO_SYSSPACE when writing data to a kernel buffer.
+
+3. Why can the struct uio that is used to read in a segment be allocated on the stack in load_segment() (i.e., where does the memory read actually go)?
+    The uio struct contains a iovec, which wraps a buffer that is the destination of the memory read. 
+    The uio, however, also specifies the address space as that of the current thread, 
+    so the read happen into the user address space.
+
+4. In runprogram(), why is it important to call vfs_close() before going to usermode?
+    Once we've loaded the executable, we no longer need a reference to the file. 
+    If we don't close the vnode before warping to user mode in another process, we will never close the file and have a memory leak.
+
+5. What function forces the processor to switch into usermode? Is this function machine dependent?
+    md_usermode() forces the processor to switch to usermode and it is machine dependent.
+
+6. In what file are copyin and copyout defined? Why can't copyin and copyout be implemented simply as memmove?
+    copyin() and copyout() are defined in copyinout.c
+    and memmove() is defined in memmove.c. copyin()/copyout() copies block of memory across user/kernel addresses 
+    ensuring that user pointers are not accessing offlimit addresses, something that memmove() is not capable of doing.
+
+7. What is the purpose of userptr_t?
+    It is used for noting that the provided address needs to be within the proper userspace region.
+
+
+--kern/arch/mips/mips: traps and syscalls--
+
+1. What is the numerical value of the exception code for a MIPS system call?
+    EX_SYS -> numerical value is eight
+
+2. Why does mips_trap() set curspl to SPL_HIGH "manually", instead of using splhigh()?
+
+3. How many bytes are in an instruction in MIPS? (Answer this by reading mips_syscall() carefully, not by looking somewhere else.)
+    32bits - 4 bytes 
+
+4. Why do you "probably want to change" the implementation of kill_curthread()?
+    At the moment the kill_curthread() function is not doing any 'killing' it simply prints what sort of fault occured to the terminal.
+
+5. What would be required to implement a system call that took more than 4 arguments?
+    We would need another register to supply argument number 4.
+
+-- lib: user-level library code -- 
+
+1. What is thee purpose of the SYSCALL macro?
+    SYSCALL macro is used to update appropriate registers for running systems calls accordingly 
+
+2. What is the MIPS instruction that actually triggers a system call? (Answer this by reading the source in this directory, not looking somewhere else.)
+    syscall
+
+-- Design Ideation for ASST1 System Calls -- 
+
+The following System Calls are to be implemented 
+
+// THESE ARE DEFINED IN kern/userprog/system_callsPI.c //
+// Declared in header file kern/include/syscall.h
+
+1) _exit() - TBD
+2) write() - DONE
+3) read() - DONE
+4) sleep() - IN PROGRESS 
+5) _time() - IN PROGRESS 
