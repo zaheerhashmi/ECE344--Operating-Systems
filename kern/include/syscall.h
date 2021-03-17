@@ -21,5 +21,7 @@ int sys__time(time_t *seconds, int *nanoseconds, int *retval);
 
 void sys_exit(int exitcode);
 
+pid_t sys_getpid(void);
+
 
 #endif /* _SYSCALL_H_ */
