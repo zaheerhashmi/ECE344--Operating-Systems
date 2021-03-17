@@ -3,6 +3,7 @@
 #include <syscall.h>
 #include <kern/errno.h>
 #include <kern/unistd.h>
+#include <thread.h>
 
 int sys_write(int fd, const void *buf, size_t nbytes, int* retval){
 
@@ -88,4 +89,13 @@ int sys_write(int fd, const void *buf, size_t nbytes, int* retval){
 
 
 } 
+
+int sys_sleep(int seconds,int *retval){
+
+  clocksleep(seconds);
+  *retval = 0;
+  return 0;
+
+}
+
 
