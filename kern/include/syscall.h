@@ -9,6 +9,7 @@
 
 int sys_reboot(int code);
 int sys_write(int fd, const void *buf, size_t nbytes, int* retval);
+int sys_read (int fd, void *buf, size_t buflen, int* retval);
 
 
 #endif /* _SYSCALL_H_ */

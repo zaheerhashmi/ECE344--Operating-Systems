@@ -7,7 +7,6 @@
 #include <kern/callno.h>
 #include <syscall.h>
 
-
 /*
  * System call handler.
  *
@@ -45,6 +44,9 @@
  * arch/mips/include/types.h.)
  */
 
+
+
+
 void
 mips_syscall(struct trapframe *tf)
 {
@@ -77,8 +79,12 @@ mips_syscall(struct trapframe *tf)
 		// Write system Call // 
 
 		case SYS_write:
-		err = sys_write(tf->tf_ao,(void *) tf->tf_a1, tf->tf_a2, &retval);
+		err = sys_write(tf->tf_a0,(void *) tf->tf_a1, tf->tf_a2, &retval);
 		break;
+
+		case SYS_read:
+		err = sys_read(tf->tf_a0,(void *) tf->tf_a1, tf->tf_a2, &retval);
+		break; 
  
 	    default:
 		kprintf("Unknown syscall %d\n", callno);
