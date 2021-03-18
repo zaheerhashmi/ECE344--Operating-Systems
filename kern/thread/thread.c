@@ -14,6 +14,10 @@
 #include <vnode.h>
 #include "opt-synchprobs.h"
 
+#include <pid_system.h>
+
+extern struct pid *pidHead;
+
 /* States a thread can be in. */
 typedef enum {
 	S_RUN,
@@ -68,6 +72,13 @@ thread_create(const char *name)
 	thread->t_vmspace = NULL;
 
 	thread->t_cwd = NULL;
+
+	if(numthreads == 0){
+		thread->pidValue = 1;
+	}
+	else{
+		thread->pidValue = assign_pid(pidHead);
+	}
 	
 	// If you add things to the thread structure, be sure to initialize
 	// them here.
@@ -117,6 +128,9 @@ exorcise(void)
 	
 	for (i=0; i<array_getnum(zombies); i++) {
 		struct thread *z = array_getguy(zombies, i);
+
+		release_pid(pidHead, z->pidValue);
+
 		assert(z!=curthread);
 		thread_destroy(z);
 	}
@@ -191,6 +205,8 @@ thread_bootstrap(void)
 	if (zombies==NULL) {
 		panic("Cannot create zombies array\n");
 	}
+
+	numthreads = 0;
 	
 	/*
 	 * Create the thread structure for the first thread

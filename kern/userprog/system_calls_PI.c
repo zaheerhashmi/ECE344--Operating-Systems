@@ -6,6 +6,8 @@
 #include <thread.h>
 #include <clock.h>
 
+#include <curthread.h>
+
 int sys_write(int fd, const void *buf, size_t nbytes, int* retval){
 
     char* kernelBuffer;
@@ -147,8 +149,9 @@ void sys_exit(int exitcode){
 }
 
 pid_t sys_getpid(){
-  kprintf("Get pid of the current process");
-  return 0;
+  return curthread->pidValue;
+  //kprintf("Get pid of the current process");
+  //return 0;
 }
 
 

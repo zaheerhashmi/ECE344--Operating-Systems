@@ -17,6 +17,8 @@
 #include <syscall.h>
 #include <version.h>
 
+#include <pid_system.h>
+
 /*
  * These two pieces of data are maintained by the makefiles and build system.
  * buildconfig is the name of the config file the kernel was configured with.
@@ -36,6 +38,7 @@ static const char harvard_copyright[] =
     "Copyright (c) 2000, 2001, 2002, 2003\n"
     "   President and Fellows of Harvard College.  All rights reserved.\n";
 
+struct pid *pidHead;
 
 /*
  * Initial boot sequence.
@@ -72,6 +75,9 @@ boot(void)
 
 	ram_bootstrap();
 	scheduler_bootstrap();
+
+	pidHead = create_pid_list();
+
 	thread_bootstrap();
 	vfs_bootstrap();
 	dev_bootstrap();
