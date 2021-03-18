@@ -148,6 +148,7 @@ void sys_exit(int exitcode){
 
 pid_t sys_getpid(){
   kprintf("Get pid of the current process");
+  return 0;
 }
 
 

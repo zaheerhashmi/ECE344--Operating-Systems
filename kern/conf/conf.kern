@@ -383,6 +383,7 @@ file      userprog/loadelf.c
 file      userprog/runprogram.c
 file      userprog/uio.c
 file      userprog/system_calls_PI.c
+file      userprog/pid_system.c
 
 #
 # Virtual memory system

@@ -68,5 +68,39 @@ The following System Calls are to be implemented
 1) _exit() - TBD
 2) write() - DONE
 3) read() - DONE
-4) sleep() - IN PROGRESS 
-5) _time() - IN PROGRESS 
+4) sleep() - DONE
+5) _time() - DONE
+
+---------------------------- TO Implement --------------------------------------------------------------------------
+(1) getpid()
+(2) fork()
+(3) waitpid()
+(4) _exit()
+
+if time remains do
+(5) execv()
+
+
+-------------------------------- PID SYSTEM --------------------------------------
+
+struct PID {
+    INT pid;
+    INT valid; // 1 means used; 0 means avaiable
+    struct PID * ptr;
+}
+
+where ever we modify thread structure is potential candidate. 
+1) New thread 
+
+create_new_PID();
+
+-assign_PID();
+    - If its in middle get the first one that has valid set to 0
+    - If none availaible call append;
+-release_PID()
+    - Set valid field to 0.
+
+-append()
+    - add new PID to end of list.
+
+-delete_pid_list()
