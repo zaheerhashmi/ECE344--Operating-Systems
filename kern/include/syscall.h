@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include <kern/unistd.h>
+#include <machine/trapframe.h>
 
 
 /*
@@ -22,6 +23,8 @@ int sys__time(time_t *seconds, int *nanoseconds, int *retval);
 void sys_exit(int exitcode);
 
 pid_t sys_getpid(void);
+
+pid_t sys_fork (struct trapframe *tf, int *retval);
 
 
 #endif /* _SYSCALL_H_ */

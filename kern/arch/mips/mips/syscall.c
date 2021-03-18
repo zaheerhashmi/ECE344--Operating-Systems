@@ -6,6 +6,8 @@
 #include <machine/trapframe.h>
 #include <kern/callno.h>
 #include <syscall.h>
+#include <curthread.h>
+#include <addrspace.h>
 
 /*
  * System call handler.
@@ -102,6 +104,10 @@ mips_syscall(struct trapframe *tf)
 		err = sys_getpid();
 		break;
 
+		case SYS_fork:
+		err = sys_fork(tf,&retval);
+		break;
+
 	    default:
 		kprintf("Unknown syscall %d\n", callno);
 		err = ENOSYS;
@@ -135,15 +141,31 @@ mips_syscall(struct trapframe *tf)
 	assert(curspl==0);
 }
 
+
+// This is the first function the child will execute when it is run by the scheduler// 
+
 void
-md_forkentry(struct trapframe *tf)
+md_forkentry(struct trapframe *tf,pid_t myParent)
 {
 	/*
 	 * This function is provided as a reminder. You need to write
 	 * both it and the code that calls it.
+	 * 	
+	 *
 	 *
 	 * Thus, you can trash it and do things another way if you prefer.
 	 */
+		kprintf("Hey I am a new child, my parent is %d",myParent);
 
-	(void)tf;
+		tf->tf_v0 = 0;
+		tf->tf_a3 = 0;
+
+	/*
+	 * Now, advance the program counter, to avoid restarting
+	 * the syscall over and over again.
+	*/
+	
+
+	tf->tf_epc += 4;
+	 mips_usermode(tf);
 }

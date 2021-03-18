@@ -20,8 +20,10 @@ struct thread {
 	char *t_name;
 	const void *t_sleepaddr;
 	char *t_stack;
-
 	int pidValue;
+	int parentPID; // Will be zero for very first thread; which is an invalid PID number//
+
+
 	
 	/**********************************************************/
 	/* Public thread members - can be used by other code      */

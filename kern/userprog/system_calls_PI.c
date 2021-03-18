@@ -5,8 +5,8 @@
 #include <kern/unistd.h>
 #include <thread.h>
 #include <clock.h>
-
 #include <curthread.h>
+#include <addrspace.h>
 
 int sys_write(int fd, const void *buf, size_t nbytes, int* retval){
 
@@ -148,10 +148,59 @@ void sys_exit(int exitcode){
     thread_exit();
 }
 
+
 pid_t sys_getpid(){
   return curthread->pidValue;
   //kprintf("Get pid of the current process");
   //return 0;
 }
+
+
+pid_t sys_fork (struct trapframe *tf, int *retval){
+  
+  // Set up required data structures for the child // 
+
+  int errorCode;
+  pid_t parentPID; // passed as argument to 
+  parentPID = curthread->pidValue;
+  struct trapframe * parentTrapframe = tf;
+
+  
+  struct thread* childThread;
+  struct trapframe * childTrapframe = (struct trapframe *) kmalloc(sizeof(struct trapframe));
+
+    if(childTrapframe == NULL){
+       *retval = -1;
+       return ENOMEM;
+    }
+
+  *(childTrapframe) = *(parentTrapframe);
+  errorCode = thread_fork(curthread->t_name, childTrapframe, parentPID,(void *)md_forkentry, &childThread);
+
+    if(errorCode == ENOMEM){
+      *retval = -1;
+      return ENOMEM;
+    }
+  childThread->parentPID = parentPID;
+
+    // Child inherits parents address space //
+      // Using functions from dumbvm for now //
+
+     errorCode=  as_copy(curthread->t_vmspace,&(childThread->t_vmspace));  
+
+      if(errorCode == ENOMEM){
+        *retval = -1;
+        return ENOMEM;
+    }
+
+    as_activate(childThread->t_vmspace);
+
+    // Returning child pid to parent // 
+    *retval =  childThread->pidValue; 
+    return 0;
+
+
+
+} 
 
 

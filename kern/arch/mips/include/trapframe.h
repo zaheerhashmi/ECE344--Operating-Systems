@@ -1,6 +1,8 @@
 #ifndef _MIPS_TRAPFRAME_H_
 #define _MIPS_TRAPFRAME_H_
 
+#include <addrspace.h>
+
 /*
  * Structure describing what is saved on the stack during entry to
  * the exception handler.
@@ -72,6 +74,6 @@ struct trapframe {
  * happen.
  */
 void mips_usermode(struct trapframe *tf);
-void md_forkentry(struct trapframe *tf);
+void md_forkentry(struct trapframe *tf, pid_t parentPID);
 
 #endif /* _MIPS_TRAPFRAME_H_ */
