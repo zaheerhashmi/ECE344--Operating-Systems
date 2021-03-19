@@ -31,7 +31,7 @@ dofork(void)
 {
 	int pid;
 	pid = fork();
-	printf("%d",pid);
+	printf("%d+2",pid);
 	if (pid < 0) {
 		warn("fork");
 	}

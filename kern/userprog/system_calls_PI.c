@@ -155,7 +155,7 @@ pid_t sys_getpid(){
   //return 0;
 }
 
-pid_t sys_fork (struct trapframe *tf, int *retval){
+int sys_fork (struct trapframe *tf, int *retval){
   
   // Set up required data structures for the child // 
 
@@ -173,13 +173,15 @@ pid_t sys_fork (struct trapframe *tf, int *retval){
     if(errorCode){
         return errorCode;
     }
+
+    as_activate(curthread->t_vmspace);
   
   
   struct thread* childThread;
   struct trapframe * childTrapframe = (struct trapframe *) kmalloc(sizeof(struct trapframe));
 
     if(childTrapframe == NULL){
-      kfree(childAddrspace);
+      as_destroy(childAddrspace);
        return ENOMEM;
     }
     
@@ -188,7 +190,7 @@ pid_t sys_fork (struct trapframe *tf, int *retval){
 
     if(errorCode){
       kfree(childTrapframe);
-      kfree(childAddrspace);
+      as_destroy(childAddrspace);
       return errorCode;
     }
   childThread->parentPID = parentPID;
