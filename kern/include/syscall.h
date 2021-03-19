@@ -22,7 +22,7 @@ int sys__time(time_t *seconds, int *nanoseconds, int *retval);
 
 void sys_exit(int exitcode);
 
-pid_t sys_getpid(void);
+pid_t sys_getpid(int *retval);
 
 pid_t sys_fork (struct trapframe *tf, int *retval);
 

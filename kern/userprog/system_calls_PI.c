@@ -149,8 +149,9 @@ void sys_exit(int exitcode){
 }
 
 
-pid_t sys_getpid(){
-  return curthread->pidValue;
+pid_t sys_getpid(int *retval){
+  *retval =  curthread->pidValue; 
+  return 0;
   //kprintf("Get pid of the current process");
   //return 0;
 }
