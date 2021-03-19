@@ -1,6 +1,7 @@
 #include <types.h>
 #include <pid_system.h>
 #include <lib.h>
+#include <machine/spl.h>
 
 struct pid* create_pid_list(){
 
@@ -21,7 +22,10 @@ struct pid* create_pid_list(){
 }
 
 void append_pid(struct pid* head, int pidValue) 
-{ 
+{   
+    int s;
+    s = splhigh();
+
     struct pid* new_pid = (struct pid*) kmalloc(sizeof(struct pid)); 
   
     struct pid *last = head;
@@ -33,40 +37,57 @@ void append_pid(struct pid* head, int pidValue)
     while (last->next != NULL) 
         last = last->next; 
     
-    last->next = new_pid; 
+    last->next = new_pid;
+
+    splx(s);
     return;     
 } 
 
 int assign_pid(struct pid* head){
+
+    int s;
+    s = splhigh();
+
     struct pid *current = head;
     struct pid *next = current->next;
 
     while(current != NULL){
         if(next == NULL){
             append_pid(head, current->pidValue+1);
+            splx(s);
             return current->pidValue+1;
         }
         if(next->isUsed == 0){
             next->isUsed = 1;
+            splx(s);
             return next->pidValue;
         }
         current = next;
         next = current->next;
     }
 
+    splx(s);
     return -1;
 }
 
 void release_pid(struct pid* head, int pidValue){
+
+    int s;
+    s = splhigh();
+
     struct pid *current = head;
 
     while(current != NULL){
         if(current->pidValue == pidValue){
             current->isUsed = 0;
+
+            splx(s);
             return;
         }
         current = current->next;
     }
+
+    splx(s);
 }
 
 void delete_pid_list(struct pid* head){
