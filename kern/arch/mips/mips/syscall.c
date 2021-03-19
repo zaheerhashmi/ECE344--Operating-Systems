@@ -8,6 +8,7 @@
 #include <syscall.h>
 #include <curthread.h>
 #include <addrspace.h>
+#include <thread.h>
 
 /*
  * System call handler.
@@ -142,37 +143,38 @@ mips_syscall(struct trapframe *tf)
 }
 
 
-// This is the first function the child will execute when it is run by the scheduler// 
+// This is the first function the child will exescute when it is run by the scheduler// 
 
-void
-md_forkentry(struct trapframe *tf,pid_t myParent)
-{
-	// DEBUG: we need to ensure the stack is on current thread stack //
-		/* data */
-	
-	struct trapframe * parent = tf;
-	struct trapframe child;
-	child = *parent;
-	kfree(tf); 
-	/*
-	 * This function is provided as a reminder. You need to write
-	 * both it and the code that calls it.
-	 * 	
-	 *
-	 *
-	 * Thus, you can trash it and do things another way if you prefer.
-	 */
-		kprintf("Hey I am a new child, my parent is %d \n",myParent);
+void md_forkentry(struct trapframe *tf,unsigned long childAddrspace) {
+  // DEBUG: we need to ensure the stack is on current thread stack //
+    /* data */
+  
+  struct trapframe * parent = tf;
+  struct trapframe child;
+  child = *parent;
+  kfree(tf); 
 
-		tf->tf_v0 = 0;
-		tf->tf_a3 = 0;
+  curthread->t_vmspace = (struct addrspace *)childAddrspace;
+  as_activate(curthread->t_vmspace);
+  /*
+   * This function is provided as a reminder. You need to write
+   * both it and the code that calls it.
+   *  
+   *
+   *
+   * Thus, you can trash it and do things another way if you prefer.
+   */
+    //kprintf("Hey I am a new child, my parent is %d \n",myParent);
 
-	/*
-	 * Now, advance the program counter, to avoid restarting
-	 * the syscall over and over again.
-	*/
-	
+    tf->tf_v0 = 0;
+    tf->tf_a3 = 0;
 
-	tf->tf_epc += 4;
-	 mips_usermode(&child);
+  /*
+   * Now, advance the program counter, to avoid restarting
+   * the syscall over and over again.
+  */
+  
+
+  tf->tf_epc += 4;
+   mips_usermode(&child);
 }
