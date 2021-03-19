@@ -18,6 +18,8 @@
 #include <version.h>
 
 #include <pid_system.h>
+#include <synch.h>
+
 
 /*
  * These two pieces of data are maintained by the makefiles and build system.
@@ -39,7 +41,7 @@ static const char harvard_copyright[] =
     "   President and Fellows of Harvard College.  All rights reserved.\n";
 
 struct pid *pidHead;
-
+struct lock* forkLock;
 /*
  * Initial boot sequence.
  */
@@ -112,6 +114,7 @@ shutdown(void)
 	splhigh();
 
 	scheduler_shutdown();
+	kprintf("I am in shutdown boy \n");
 	thread_shutdown();
 }
 
@@ -166,6 +169,7 @@ kmain(char *arguments)
 {
 	boot();
 
+	forkLock = lock_create("forkLock");
 	menu(arguments);
 
 	/* Should not get here */

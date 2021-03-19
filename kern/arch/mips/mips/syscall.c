@@ -146,42 +146,24 @@ mips_syscall(struct trapframe *tf)
 // This is the first function the child will exescute when it is run by the scheduler// 
 
 void md_forkentry(struct trapframe *tf,pid_t parentPID) {
-  // DEBUG: we need to ensure the stack is on current thread stack //
-    /* data */
-  int s;
-	s = splhigh();
-  struct trapframe * parent = tf; 
- // curthread->t_vmspace = (struct addrspace *)childAddrspace;
- // assert(curthread->t_vmspace != NULL);
-  as_activate(curthread->t_vmspace);
-  /*
-   * This function is provided as a reminder. You need to write
-   * both it and the code that calls it.
-   *  
-   *
-   *
-   * Thus, you can trash it and do things another way if you prefer.
-   */
-    //kprintf("Hey I am a new child, my parent is %d \n",myParent);
+ 
+ int s = splhigh();
+ struct trapframe * parent = tf; 
+ struct trapframe childTrapframe;
+ childTrapframe = *parent;
+ as_activate(curthread->t_vmspace);
 
-    tf->tf_v0 = 0;
-    tf->tf_a3 = 0;
-	
-	int zaheer = 0;
-	if(zaheer){
+ 	int dummyVar = 0;
+	if(dummyVar){
 		assert(parentPID);
 	}
-  /*
-   * Now, advance the program counter, to avoid restarting
-   * the syscall over and over again.
-  */
-  
+ 
+// Setting up child retval of zero and making PC point to instruction after syscall//
+    childTrapframe.tf_v0 = 0;
+    childTrapframe.tf_a3 = 0;
+	childTrapframe.tf_epc += 4;
 
-  tf->tf_epc += 4;
-  struct trapframe child;
-  child = *parent;
-
-	kfree(tf);
-	splx(s);
-   mips_usermode(&child);
+   kfree(tf);
+   splx(s);
+   mips_usermode(&childTrapframe);
 }

@@ -8,6 +8,10 @@
 #include <curthread.h>
 #include <addrspace.h>
 #include <machine/spl.h>
+#include <synch.h>
+#include <scheduler.h>
+
+extern struct lock* forkLock;
 
 int sys_write(int fd, const void *buf, size_t nbytes, int* retval){
 
@@ -167,50 +171,58 @@ int sys_fork (struct trapframe *tf, int *retval){
   // Set up required data structures for the child // 
 
   int errorCode;
-  pid_t parentPID; // passed as argument to 
+  pid_t parentPID; // passed as argument to stub functions: Debugging purposes // 
   parentPID = curthread->pidValue;
   struct trapframe * parentTrapframe = tf;
- // struct addrspace * childAddrspace;
+ 
   struct thread* childThread;
-
+  struct addrspace* childAddrspace;
   struct trapframe * childTrapframe = (struct trapframe *) kmalloc(sizeof(struct trapframe));
 
     if(childTrapframe == NULL){
+        kprintf("Out of memory \n");
         *retval = -1;
-    //  as_destroy(childAddrspace);
-       return ENOMEM;
+        splx(s);
+        return ENOMEM;
     }
     
   *(childTrapframe) = *(parentTrapframe); // Parent trap frame to child //
       
-  
- 
 
-  errorCode = thread_fork(curthread->t_name, childTrapframe, (unsigned long)parentPID,(void *)md_forkentry, &childThread);
-
-    if(errorCode){
-      kfree(childTrapframe);
-        *retval = -1;
-   //   as_destroy(childAddrspace);
-      return errorCode;
-    }
-  childThread->parentPID = parentPID;
    
    // Child inherits parents address space; Using functions from dumbvm for now //
-  errorCode=  as_copy(curthread->t_vmspace,&(childThread->t_vmspace));  
+    errorCode=  as_copy(curthread->t_vmspace,&(childAddrspace));  
 
     if(errorCode){
         kfree(childTrapframe);
         *retval = -1;
+        splx(s);
         return errorCode;
     }
 
+  errorCode = thread_fork(curthread->t_name, 
+  childTrapframe, (unsigned long)parentPID,
+  (void *)md_forkentry, &childThread);
+
+    if(errorCode){
+        kfree(childTrapframe);
+        as_destroy(childAddrspace);
+        *retval = -1;
+        splx(s);
+        return errorCode;
+    }
+      
+  childThread->parentPID = parentPID;
+  childThread->t_vmspace = childAddrspace;
+
     // Returning child pid to parent // 
     *retval =  childThread->pidValue; 
-    
+      // print_run_queue(); use for debugging
     splx(s);
     return 0;
 
 } 
+
+
 
 

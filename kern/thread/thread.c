@@ -159,6 +159,7 @@ thread_killall(void)
 	for (i=0; i<array_getnum(sleepers); i++) {
 		struct thread *t = array_getguy(sleepers, i);
 		kprintf("sleep: Dropping thread %s\n", t->t_name);
+		kprintf("%d \n",numthreads);
 
 		/*
 		 * Don't do this: because these threads haven't
@@ -484,6 +485,7 @@ thread_exit(void)
 	splhigh();
 
 	if (curthread->t_vmspace) {
+
 		/*
 		 * Do this carefully to avoid race condition with
 		 * context switch code.
