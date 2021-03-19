@@ -35,7 +35,7 @@ static const char *const trapcodenames[NTRAPCODES] = {
  * Function called when user-level code hits a fatal fault.
  */
 static
-void
+int
 kill_curthread(u_int32_t epc, unsigned code, u_int32_t vaddr)
 {
 	assert(code<NTRAPCODES);
@@ -47,6 +47,7 @@ kill_curthread(u_int32_t epc, unsigned code, u_int32_t vaddr)
 	 */
 	splhigh();
 	thread_exit();
+	return -1;
 	panic("I don't know how to handle this\n");
 }
 

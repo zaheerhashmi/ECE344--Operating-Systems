@@ -109,6 +109,10 @@ mips_syscall(struct trapframe *tf)
 		err = sys_fork(tf,&retval);
 		break;
 
+		case SYS_waitpid:
+		err = sys_waitpid(tf->tf_a0,(int *)tf->tf_a1,tf->tf_a2,&retval);
+		break;
+
 	    default:
 		kprintf("Unknown syscall %d\n", callno);
 		err = ENOSYS;
@@ -145,7 +149,7 @@ mips_syscall(struct trapframe *tf)
 
 // This is the first function the child will exescute when it is run by the scheduler// 
 
-void md_forkentry(struct trapframe *tf,pid_t parentPID) {
+void childProcstub(struct trapframe *tf) {
  
  int s = splhigh();
  struct trapframe * parent = tf; 
@@ -153,11 +157,6 @@ void md_forkentry(struct trapframe *tf,pid_t parentPID) {
  childTrapframe = *parent;
  as_activate(curthread->t_vmspace);
 
- 	int dummyVar = 0;
-	if(dummyVar){
-		assert(parentPID);
-	}
- 
 // Setting up child retval of zero and making PC point to instruction after syscall//
     childTrapframe.tf_v0 = 0;
     childTrapframe.tf_a3 = 0;

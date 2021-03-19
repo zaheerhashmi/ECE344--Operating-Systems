@@ -26,5 +26,6 @@ pid_t sys_getpid(int *retval);
 
 pid_t sys_fork (struct trapframe *tf, int *retval);
 
+pid_t sys_waitpid(pid_t pid, int *status, int options, int *retval);
 
 #endif /* _SYSCALL_H_ */

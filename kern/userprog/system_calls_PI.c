@@ -201,8 +201,8 @@ int sys_fork (struct trapframe *tf, int *retval){
     }
 
   errorCode = thread_fork(curthread->t_name, 
-  childTrapframe, (unsigned long)parentPID,
-  (void *)md_forkentry, &childThread);
+  childTrapframe, (unsigned long)NULL,
+  (void *)childProcstub, &childThread);
 
     if(errorCode){
         kfree(childTrapframe);
@@ -211,9 +211,10 @@ int sys_fork (struct trapframe *tf, int *retval){
         splx(s);
         return errorCode;
     }
-      
+
   childThread->parentPID = parentPID;
   childThread->t_vmspace = childAddrspace;
+  as_activate(curthread->t_vmspace);
 
     // Returning child pid to parent // 
     *retval =  childThread->pidValue; 
@@ -223,6 +224,11 @@ int sys_fork (struct trapframe *tf, int *retval){
 
 } 
 
+int sys_waitpid(pid_t pid, int *status, int options, int *retval){
+  // Dummy code: this function needs to be written //
+  kprintf("%d,%d,%d,%d",pid,*status,options,*retval);
+  return curthread->pidValue;
+}
 
 
 

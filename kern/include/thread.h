@@ -20,8 +20,14 @@ struct thread {
 	char *t_name;
 	const void *t_sleepaddr;
 	char *t_stack;
+	
+	// Process related fields // 
 	int pidValue;
 	int parentPID; // Will be zero for very first thread; which is an invalid PID number//
+	int exitStatus; // Has the process exited or not//
+
+	// Consider adding a struct for childern //
+
 
 
 	
