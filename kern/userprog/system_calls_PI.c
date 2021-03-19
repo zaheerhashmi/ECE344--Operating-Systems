@@ -178,6 +178,7 @@ pid_t sys_fork (struct trapframe *tf, int *retval){
   errorCode = thread_fork(curthread->t_name, childTrapframe, parentPID,(void *)md_forkentry, &childThread);
 
     if(errorCode == ENOMEM){
+      kfree(childTrapframe);
       *retval = -1;
       return ENOMEM;
     }
@@ -189,6 +190,8 @@ pid_t sys_fork (struct trapframe *tf, int *retval){
      errorCode=  as_copy(curthread->t_vmspace,&(childThread->t_vmspace));  
 
       if(errorCode == ENOMEM){
+        kfree(childTrapframe);
+        kfree(childThread);
         *retval = -1;
         return ENOMEM;
     }

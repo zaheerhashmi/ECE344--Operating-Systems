@@ -17,6 +17,7 @@
 #include <syscall.h>
 #include <version.h>
 
+#include <synch.h>
 #include <pid_system.h>
 
 /*
@@ -39,6 +40,7 @@ static const char harvard_copyright[] =
     "   President and Fellows of Harvard College.  All rights reserved.\n";
 
 struct pid *pidHead;
+
 
 /*
  * Initial boot sequence.
@@ -76,6 +78,7 @@ boot(void)
 	ram_bootstrap();
 	scheduler_bootstrap();
 
+	
 	pidHead = create_pid_list();
 
 	thread_bootstrap();

@@ -147,6 +147,13 @@ mips_syscall(struct trapframe *tf)
 void
 md_forkentry(struct trapframe *tf,pid_t myParent)
 {
+	// DEBUG: we need to ensure the stack is on current thread stack //
+		/* data */
+	
+	struct trapframe * parent = tf;
+	struct trapframe child;
+	child = *parent;
+	kfree(tf); 
 	/*
 	 * This function is provided as a reminder. You need to write
 	 * both it and the code that calls it.
@@ -155,7 +162,7 @@ md_forkentry(struct trapframe *tf,pid_t myParent)
 	 *
 	 * Thus, you can trash it and do things another way if you prefer.
 	 */
-		kprintf("Hey I am a new child, my parent is %d",myParent);
+		kprintf("Hey I am a new child, my parent is %d \n",myParent);
 
 		tf->tf_v0 = 0;
 		tf->tf_a3 = 0;
@@ -167,5 +174,5 @@ md_forkentry(struct trapframe *tf,pid_t myParent)
 	
 
 	tf->tf_epc += 4;
-	 mips_usermode(tf);
+	 mips_usermode(&child);
 }
