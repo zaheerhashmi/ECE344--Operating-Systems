@@ -145,17 +145,14 @@ mips_syscall(struct trapframe *tf)
 
 // This is the first function the child will exescute when it is run by the scheduler// 
 
-void md_forkentry(struct trapframe *tf,unsigned long childAddrspace) {
+void md_forkentry(struct trapframe *tf,pid_t parentPID) {
   // DEBUG: we need to ensure the stack is on current thread stack //
     /* data */
   int s;
 	s = splhigh();
-  struct trapframe * parent = tf;
-  struct trapframe child;
-  child = *parent;
-  kfree(tf); 
-  curthread->t_vmspace = (struct addrspace *)childAddrspace;
-  assert(curthread->t_vmspace != NULL);
+  struct trapframe * parent = tf; 
+ // curthread->t_vmspace = (struct addrspace *)childAddrspace;
+ // assert(curthread->t_vmspace != NULL);
   as_activate(curthread->t_vmspace);
   /*
    * This function is provided as a reminder. You need to write
@@ -169,7 +166,11 @@ void md_forkentry(struct trapframe *tf,unsigned long childAddrspace) {
 
     tf->tf_v0 = 0;
     tf->tf_a3 = 0;
-
+	
+	int zaheer = 0;
+	if(zaheer){
+		assert(parentPID);
+	}
   /*
    * Now, advance the program counter, to avoid restarting
    * the syscall over and over again.
@@ -177,7 +178,10 @@ void md_forkentry(struct trapframe *tf,unsigned long childAddrspace) {
   
 
   tf->tf_epc += 4;
+  struct trapframe child;
+  child = *parent;
 
+	kfree(tf);
 	splx(s);
    mips_usermode(&child);
 }

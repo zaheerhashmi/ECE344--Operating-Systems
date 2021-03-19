@@ -74,6 +74,6 @@ struct trapframe {
  * happen.
  */
 void mips_usermode(struct trapframe *tf);
-void md_forkentry(struct trapframe *tf, unsigned long childAddrspace);
+void md_forkentry(struct trapframe *tf, pid_t parentPID);
 
 #endif /* _MIPS_TRAPFRAME_H_ */

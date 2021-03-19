@@ -170,41 +170,45 @@ int sys_fork (struct trapframe *tf, int *retval){
   pid_t parentPID; // passed as argument to 
   parentPID = curthread->pidValue;
   struct trapframe * parentTrapframe = tf;
-  struct addrspace * childAddrspace;
-
-     // Child inherits parents address space //
-      // Using functions from dumbvm for now //
-
-  errorCode=  as_copy(curthread->t_vmspace,&(childAddrspace));  
-
-    if(errorCode){
-        return errorCode;
-    }
-
-    as_activate(curthread->t_vmspace);
-  
-  
+ // struct addrspace * childAddrspace;
   struct thread* childThread;
+
   struct trapframe * childTrapframe = (struct trapframe *) kmalloc(sizeof(struct trapframe));
 
     if(childTrapframe == NULL){
-      as_destroy(childAddrspace);
+        *retval = -1;
+    //  as_destroy(childAddrspace);
        return ENOMEM;
     }
     
-  *(childTrapframe) = *(parentTrapframe);
-  errorCode = thread_fork(curthread->t_name, childTrapframe, (unsigned long)childAddrspace,(void *)md_forkentry, &childThread);
+  *(childTrapframe) = *(parentTrapframe); // Parent trap frame to child //
+      
+  
+ 
+
+  errorCode = thread_fork(curthread->t_name, childTrapframe, (unsigned long)parentPID,(void *)md_forkentry, &childThread);
 
     if(errorCode){
       kfree(childTrapframe);
-      as_destroy(childAddrspace);
+        *retval = -1;
+   //   as_destroy(childAddrspace);
       return errorCode;
     }
   childThread->parentPID = parentPID;
+   
+   // Child inherits parents address space; Using functions from dumbvm for now //
+  errorCode=  as_copy(curthread->t_vmspace,&(childThread->t_vmspace));  
+
+    if(errorCode){
+        kfree(childTrapframe);
+        *retval = -1;
+        return errorCode;
+    }
 
     // Returning child pid to parent // 
     *retval =  childThread->pidValue; 
-    	splx(s);
+    
+    splx(s);
     return 0;
 
 } 
