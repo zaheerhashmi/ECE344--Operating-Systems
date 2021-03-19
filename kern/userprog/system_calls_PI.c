@@ -7,6 +7,7 @@
 #include <clock.h>
 #include <curthread.h>
 #include <addrspace.h>
+#include <machine/spl.h>
 
 int sys_write(int fd, const void *buf, size_t nbytes, int* retval){
 
@@ -156,7 +157,12 @@ pid_t sys_getpid(int *retval){
   //return 0;
 }
 
-int sys_fork (struct trapframe *tf, int *retval){
+int sys_fork (struct trapframe *tf, int *retval){  
+  
+  int s;
+	s = splhigh();
+
+
   
   // Set up required data structures for the child // 
 
@@ -198,6 +204,7 @@ int sys_fork (struct trapframe *tf, int *retval){
 
     // Returning child pid to parent // 
     *retval =  childThread->pidValue; 
+    	splx(s);
     return 0;
 
 } 

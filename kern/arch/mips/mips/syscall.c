@@ -148,13 +148,14 @@ mips_syscall(struct trapframe *tf)
 void md_forkentry(struct trapframe *tf,unsigned long childAddrspace) {
   // DEBUG: we need to ensure the stack is on current thread stack //
     /* data */
-  
+  int s;
+	s = splhigh();
   struct trapframe * parent = tf;
   struct trapframe child;
   child = *parent;
   kfree(tf); 
-
   curthread->t_vmspace = (struct addrspace *)childAddrspace;
+  assert(curthread->t_vmspace != NULL);
   as_activate(curthread->t_vmspace);
   /*
    * This function is provided as a reminder. You need to write
@@ -176,5 +177,7 @@ void md_forkentry(struct trapframe *tf,unsigned long childAddrspace) {
   
 
   tf->tf_epc += 4;
+
+	splx(s);
    mips_usermode(&child);
 }

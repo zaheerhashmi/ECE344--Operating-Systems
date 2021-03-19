@@ -18,6 +18,7 @@
  * processes have a distinct address space.
  */
 static volatile int mypid;
+int counter = 0;
 
 /*
  * Helper function for fork that prints a warning on error.
@@ -29,8 +30,11 @@ dofork(void)
 	int pid;
 	pid = fork();
 	if (pid < 0) {
+		printf("OOPS pid less than 0 yikes \n");
 		warn("fork");
 	}
+	counter++;
+	printf("Hey im child number %d \n",counter);
 	return pid;
 }
 
@@ -143,13 +147,15 @@ main(int argc, char *argv[])
 		nowait=1;
 	}
 	else if (argc!=1 && argc!=0) {
+		printf("Maybe this?? \n");
 		warnx("usage: forktest [-w]");
 		return 1;
 	}
+	printf("what if here \n");
 	warnx("Starting.");
 
 	test(nowait);
-
+	printf("noway\n");
 	warnx("Complete.");
 	return 0;
 }
