@@ -35,9 +35,9 @@ void release_pid(struct pid* head, int pidValue);
 void delete_pid_list(struct pid* head);
 
 // Searches the pid system and returns a pointer to the the appropriate entry // 
-struct *pid pidSearch(pid_t pidValue);
+struct *pid pid_search(pid_t pidValue);
 
 // Searches for given pid and set the didExit field to one //
-void pidExit(pid_t pidValue);
+void pid_exit(pid_t pidValue);
 
 #endif /* _PID_H_ */

@@ -117,3 +117,15 @@ void delete_pid_list(struct pid* head){
    
    head = NULL;
 }
+
+struct *pid pidSearch(pid_t pidValue){
+    int pidVal = pidValue;
+    struct pid* current = head;
+    while(current != NULL){
+        if(current->pidValue == pidVal){
+            return current;
+        }
+        current = current->next
+    }
+    return NULL;
+}
