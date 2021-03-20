@@ -153,7 +153,7 @@ if(seconds != NULL){
 
 void sys_exit(int exitcode){
     kprintf("%d",exitcode);
-    thread_exit();
+    thread_exit(exitcode);
 }
 
 
@@ -228,7 +228,6 @@ int sys_fork (struct trapframe *tf, int *retval){
 } 
 
 int sys_waitpid(pid_t pid, int *status, int options, int *retval){
-  
   // Error Handling Code //  
     
       // Making sure that options is zero we dont support any options//
@@ -258,7 +257,7 @@ int sys_waitpid(pid_t pid, int *status, int options, int *retval){
                          -> if it hasnt exited we will not wait for it to exit  */
         if(curthread->pidValue == checkChild->pPid){
           if(checkChild->didExit == 1){
-            *status = 1;
+            *status = checkChild->exitCode;
             *retval = checkChild->pidValue;
             return 0;
           }
@@ -267,7 +266,7 @@ int sys_waitpid(pid_t pid, int *status, int options, int *retval){
             //and we will be waiting here
             P(checkChild->parentSem);
             V(checkChild->parentSem);
-            *status = 1;
+            *status = checkChild->exitCode;
             *retval = checkChild->pidValue;
             return 0;
             kprintf("I am gonna wait for child \n");

@@ -46,7 +46,7 @@ kill_curthread(u_int32_t epc, unsigned code, u_int32_t vaddr)
 	 * You will probably want to change this.
 	 */
 	splhigh();
-	thread_exit();
+	thread_exit(0);
 	return -1;
 	panic("I don't know how to handle this\n");
 }

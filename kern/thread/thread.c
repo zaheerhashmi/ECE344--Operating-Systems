@@ -470,7 +470,7 @@ mi_switch(threadstate_t nextstate)
  * gets called from exorcise().
  */
 void
-thread_exit(void)
+thread_exit(int exitCode)
 {
 	if (curthread->t_stack != NULL) {
 		/*
@@ -510,6 +510,7 @@ thread_exit(void)
 	 filed in the appropriate pid to 1*/ 
 	struct pid* myPid = pid_search(pidHead,curthread->pidValue);
 	myPid->didExit = 1;
+	myPid->exitCode = exitCode;
 
 	//the thread releases the semaphore synching it with its parent
 	//if the parent is waiting for this child, it will wake up
@@ -645,5 +646,5 @@ mi_threadstart(void *data1, unsigned long data2,
 	func(data1, data2);
 
 	/* Done. */
-	thread_exit();
+	thread_exit(0);
 }

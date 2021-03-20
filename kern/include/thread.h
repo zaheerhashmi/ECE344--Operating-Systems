@@ -86,7 +86,7 @@ int thread_join(struct thread * thread);
  * Cause the current thread to exit.
  * Interrupts need not be disabled.
  */
-void thread_exit(void);
+void thread_exit(int exitCode);
 
 /*
  * Cause the current thread to yield to the next runnable thread, but

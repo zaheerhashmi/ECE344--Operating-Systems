@@ -6,7 +6,7 @@ struct pid {
     int isUsed;     //1 means already used; 0 means available: this is set to zero only when a process is excorcized // 
     int pPid;       // parent pid This will be zero for the first thread (process)
     int didExit;    // Exit status of process: 1 means yes it has exited; 0 means no it hasnt exited //  
-    
+    int exitCode;
     // This will point to NULL if no thread is currently using it // 
     struct thread* myThread; // thread occupying the pid //
 
