@@ -212,7 +212,7 @@ int sys_fork (struct trapframe *tf, int *retval){
         return errorCode;
     }
 
-  childThread->parentPID = parentPID;
+  childThread->parentPid = parentPID;
   childThread->t_vmspace = childAddrspace;
   as_activate(curthread->t_vmspace);
 

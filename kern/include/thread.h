@@ -23,8 +23,8 @@ struct thread {
 	
 	// Process related fields // 
 	int pidValue;
-	int parentPID; // Will be zero for very first thread; which is an invalid PID number//
-	int exitStatus; // Has the process exited or not//
+	int parentPid; // Will be zero for very first thread; which is an invalid PID number// This is set when we fork a new child in sys_fork //
+	int exitStatus; // Has the process exited or not// This is 1 only when thread has exited but is needs to be destroyed //  
 
 	// Consider adding a struct for childern //
 

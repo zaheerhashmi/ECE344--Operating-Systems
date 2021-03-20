@@ -90,6 +90,9 @@ void release_pid(struct pid* head, int pidValue){
     while(current != NULL){
         if(current->pidValue == pidValue){
             current->isUsed = 0;
+            current->pPid = 0; // Zero just means has no parent because this thread is getting exorcised//
+            current->myThread = NULL;
+            // Recall didExit should have been set to 1 already when the thread exited // 
 
             splx(s);
             return;

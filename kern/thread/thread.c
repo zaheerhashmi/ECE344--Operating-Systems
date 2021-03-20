@@ -79,6 +79,8 @@ thread_create(const char *name)
 	else{
 		thread->pidValue = assign_pid(pidHead,thread);
 	}
+
+	thread->exitStatus = 0; // Means has not exited yet; this is set to 1 in thread_exit // 
 	
 	// If you add things to the thread structure, be sure to initialize
 	// them here.
@@ -499,6 +501,10 @@ thread_exit(void)
 		VOP_DECREF(curthread->t_cwd);
 		curthread->t_cwd = NULL;
 	}
+
+	// Indicate in the thread structure that I am exiting, i will set my exit code to 1 // 
+	curthread->exitStatus = 1;
+	// Now we also need to modify the pid_system to reflect this change // 
 
 	assert(numthreads>0);
 	numthreads--;
