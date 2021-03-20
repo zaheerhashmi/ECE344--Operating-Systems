@@ -1,15 +1,15 @@
 #ifndef _PID_H_
 #define _PID_H_
-
+#include <synch.h>
 struct pid { 
     int pidValue;
     int isUsed;     //1 means already used; 0 means available: this is set to zero only when a process is excorcized // 
     int pPid;       // parent pid This will be zero for the first thread (process)
     int didExit;    // Exit status of process: 1 means yes it has exited; 0 means no it hasnt exited //  
     
-    // This will point to NULL if not thread is currently using it // 
+    // This will point to NULL if no thread is currently using it // 
     struct thread* myThread; // thread occupying the pid //
-
+    
     struct pid* next; 
 }; 
 

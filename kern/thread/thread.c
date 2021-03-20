@@ -13,7 +13,7 @@
 #include <addrspace.h>
 #include <vnode.h>
 #include "opt-synchprobs.h"
-
+#include <synch.h>
 #include <pid_system.h>
 
 extern struct pid *pidHead;
@@ -508,7 +508,7 @@ thread_exit(void)
 	 filed in the appropriate pid to 1*/ 
 	struct pid* myPid = pid_search(pidHead,curthread->pidValue);
 	myPid->didExit = 1;
-
+	
 	assert(numthreads>0);
 	numthreads--;
 	mi_switch(S_ZOMB);

@@ -228,11 +228,10 @@ int sys_fork (struct trapframe *tf, int *retval){
 } 
 
 int sys_waitpid(pid_t pid, int *status, int options, int *retval){
-  // Dummy code: this function needs to be written //
   
   // Error Handling Code //  
     
-      // Making sure that options is zero we dont support anyoptions//
+      // Making sure that options is zero we dont support any options//
         if(options != 0){
           *retval = -1;
           return EINVAL;
@@ -244,7 +243,7 @@ int sys_waitpid(pid_t pid, int *status, int options, int *retval){
           return EFAULT;
         }
       
-      // Only allow parent to do do waitpid for simplicity; shared data structure; if NULL means search failed //
+      // Only allow parent to do do waitpid for simplicity; shared data structure; if NULL then it means search failed //
         int s = splhigh(); 
         struct pid* checkChild = pid_search(pidHead,pid);
         splx(s);
@@ -267,8 +266,14 @@ int sys_waitpid(pid_t pid, int *status, int options, int *retval){
             kprintf("I am gonna wait for child \n");
           }
         }
- 
-  kprintf("%d,%d,%d,%d",pid,*status,options,*retval);
+
+        else{
+          kprintf("Not a child \n");
+          *retval = -1;
+          return -1;
+        }
+
+        
   return curthread->pidValue;
 }
 
