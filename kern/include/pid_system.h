@@ -1,6 +1,6 @@
 #ifndef _PID_H_
 #define _PID_H_
-#include <synch.h>
+
 struct pid { 
     int pidValue;
     int isUsed;     //1 means already used; 0 means available: this is set to zero only when a process is excorcized // 
@@ -9,6 +9,9 @@ struct pid {
     
     // This will point to NULL if no thread is currently using it // 
     struct thread* myThread; // thread occupying the pid //
+
+    //a child will have one semaphore to synch with its parent
+    struct semaphore *parentSem;
     
     struct pid* next; 
 }; 

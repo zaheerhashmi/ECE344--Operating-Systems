@@ -4,6 +4,8 @@
 #include <machine/spl.h>
 #include <thread.h>
 #include <curthread.h>
+#include <synch.h>
+#include <array.h>
 
 struct pid* create_pid_list(){
 
@@ -21,7 +23,14 @@ struct pid* create_pid_list(){
     // Exit status of first thread; 0 means it hasnt exited;  // 
     pid->didExit = 0; 
     // This contains pointer to the first thread // 
-    pid->myThread = curthread; 
+    pid->myThread = curthread;
+
+    // pid->childSems = array_create();
+    // if (pid->childSems==NULL) {
+	// 	panic("Cannot create childSems array\n");
+	// }
+
+    pid->parentSem = NULL;
 
     pid->next = NULL;
 
@@ -42,7 +51,9 @@ void append_pid(struct pid* head, int pidValue,struct thread* thread)
     new_pid->pPid = curthread->pidValue;
     new_pid->myThread = thread;
     new_pid->didExit = 0;
+    new_pid->parentSem = sem_create("name",1);
     new_pid->next = NULL;
+
        
     while (last->next != NULL) 
         last = last->next; 
@@ -69,6 +80,9 @@ int assign_pid(struct pid* head,struct thread* thread){
         }
         if(next->isUsed == 0){
             next->isUsed = 1;
+            next->pPid = curthread->pidValue;
+            next->didExit = 0;
+            next->myThread = thread;
             splx(s);
             return next->pidValue;
         }
@@ -104,7 +118,7 @@ void release_pid(struct pid* head, int pidValue){
 }
 
 void delete_pid_list(struct pid* head){
-       /* deref head_ref to get the real head */
+
    struct pid* current = head;
    struct pid* next;
  

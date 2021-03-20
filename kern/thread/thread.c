@@ -78,10 +78,12 @@ thread_create(const char *name)
 	}
 	else{
 		thread->pidValue = assign_pid(pidHead,thread);
+		//the newly created thread holds the semaphore synching it with its parent
+		P(pid_search(pidHead, thread->pidValue)->parentSem);
 	}
 
-	thread->exitStatus = 0; // Means has not exited yet; this is set to 1 in thread_exit // 
-	
+	thread->exitStatus = 0; // Means has not exited yet; this is set to 1 in thread_exit //
+
 	// If you add things to the thread structure, be sure to initialize
 	// them here.
 	
@@ -508,6 +510,10 @@ thread_exit(void)
 	 filed in the appropriate pid to 1*/ 
 	struct pid* myPid = pid_search(pidHead,curthread->pidValue);
 	myPid->didExit = 1;
+
+	//the thread releases the semaphore synching it with its parent
+	//if the parent is waiting for this child, it will wake up
+	V(myPid->parentSem);
 	
 	assert(numthreads>0);
 	numthreads--;

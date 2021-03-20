@@ -263,6 +263,13 @@ int sys_waitpid(pid_t pid, int *status, int options, int *retval){
             return 0;
           }
           else{
+            //if the child did not exit, it will be holding this semaphore
+            //and we will be waiting here
+            P(checkChild->parentSem);
+            V(checkChild->parentSem);
+            *status = 1;
+            *retval = checkChild->pidValue;
+            return 0;
             kprintf("I am gonna wait for child \n");
           }
         }
