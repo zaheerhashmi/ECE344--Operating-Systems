@@ -34,10 +34,10 @@ void release_pid(struct pid* head, int pidValue);
 //kfrees every dynamically allocated pid in the list
 void delete_pid_list(struct pid* head);
 
-// Searches the pid system and returns a pointer to the the appropriate entry // 
-struct *pid pid_search(pid_t pidValue);
+// Searches the pid system and returns a pointer to the the appropriate entry; returns NULL if fails // 
+struct pid* pid_search(struct pid* head,pid_t pidValue);
 
 // Searches for given pid and set the didExit field to one //
-void pid_exit(pid_t pidValue);
+void pid_exit(struct pid* head,pid_t pidValue);
 
 #endif /* _PID_H_ */

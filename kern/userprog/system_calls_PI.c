@@ -10,8 +10,11 @@
 #include <machine/spl.h>
 #include <synch.h>
 #include <scheduler.h>
+#include <pid_system.h>
+
 
 extern struct lock* forkLock;
+extern struct pid *pidHead;
 
 int sys_write(int fd, const void *buf, size_t nbytes, int* retval){
 
@@ -241,7 +244,29 @@ int sys_waitpid(pid_t pid, int *status, int options, int *retval){
           return EFAULT;
         }
       
-      // Only allow parent to do do waitpid for simplicity // 
+      // Only allow parent to do do waitpid for simplicity; shared data structure; if NULL means search failed //
+        int s = splhigh(); 
+        struct pid* checkChild = pid_search(pidHead,pid);
+        splx(s);
+        // This means we couldnt find process: waitpid has failed //
+        if(checkChild == NULL){
+          *retval = -1;
+          return -1;
+        }
+        /* else we found a process with given pId; ensure it is 
+        1) a child and 
+        2) has it exited -> if it has exited return exit code;
+                         -> if it hasnt exited we will not wait for it to exit  */
+        if(curthread->pidValue == checkChild->pPid){
+          if(checkChild->didExit == 1){
+            *status = 1;
+            *retval = checkChild->pidValue;
+            return 0;
+          }
+          else{
+            kprintf("I am gonna wait for child \n");
+          }
+        }
  
   kprintf("%d,%d,%d,%d",pid,*status,options,*retval);
   return curthread->pidValue;

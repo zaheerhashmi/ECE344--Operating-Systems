@@ -506,7 +506,7 @@ thread_exit(void)
 	curthread->exitStatus = 1;
 	/* Now we also need to modify the pid_system to reflect this change; since we are exiting we will set didExit
 	 filed in the appropriate pid to 1*/ 
-	struct pid* myPid = pid_search(curthread->pidValue);
+	struct pid* myPid = pid_search(pidHead,curthread->pidValue);
 	myPid->didExit = 1;
 
 	assert(numthreads>0);
