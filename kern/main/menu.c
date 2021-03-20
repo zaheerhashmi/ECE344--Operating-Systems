@@ -111,8 +111,9 @@ common_prog(int nargs, char **args)
 		return result;
 	}
 
-	// need to add waitpid here // 
-	//return thread_join(thread);
+	//need to add waitpid here // 
+	
+	return thread_join(thread);
 	return 0;
 }
 

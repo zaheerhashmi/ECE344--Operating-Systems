@@ -56,7 +56,7 @@ thread_count(void)
 static
 struct thread *
 thread_create(const char *name)
-{
+{	int spl = splhigh();
 	struct thread *thread = kmalloc(sizeof(struct thread));
 	if (thread==NULL) {
 		return NULL;
@@ -86,7 +86,7 @@ thread_create(const char *name)
 
 	// If you add things to the thread structure, be sure to initialize
 	// them here.
-	
+	splx(spl);
 	return thread;
 }
 
@@ -99,7 +99,7 @@ thread_create(const char *name)
 static
 void
 thread_destroy(struct thread *thread)
-{
+{    assert(curspl>0);
 	assert(thread != curthread);
 
 	// If you add things to the thread structure, be sure to dispose of

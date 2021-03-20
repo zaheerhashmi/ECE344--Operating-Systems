@@ -229,58 +229,66 @@ int sys_fork (struct trapframe *tf, int *retval){
 
 int sys_waitpid(pid_t pid, int *status, int options, int *retval){
   // Error Handling Code //  
-    
+  int s = splhigh(); 
       // Making sure that options is zero we dont support any options//
         if(options != 0){
           *retval = -1;
+          splx(s);
           return EINVAL;
         }
       
       // Making sure status point is not null // 
         if(status == NULL){
           *retval = -1;
+          splx(s);
           return EFAULT;
         }
       
       // Only allow parent to do do waitpid for simplicity; shared data structure; if NULL then it means search failed //
-        int s = splhigh(); 
+     
         struct pid* checkChild = pid_search(pidHead,pid);
-        splx(s);
         // This means we couldnt find process: waitpid has failed //
         if(checkChild == NULL){
           *retval = -1;
-          return -1;
+          splx(s);
+          return EINVAL;
         }
         /* else we found a process with given pId; ensure it is 
         1) a child and 
         2) has it exited -> if it has exited return exit code;
                          -> if it hasnt exited we will not wait for it to exit  */
         if(curthread->pidValue == checkChild->pPid){
+     //     kprintf("Child found \n");
           if(checkChild->didExit == 1){
+      //      kprintf("Child found \n");
             *status = checkChild->exitCode;
             *retval = checkChild->pidValue;
+            splx(s);
             return 0;
           }
           else{
             //if the child did not exit, it will be holding this semaphore
             //and we will be waiting here
+       //     kprintf("I am gonna wait for child \n");
             P(checkChild->parentSem);
             V(checkChild->parentSem);
             *status = checkChild->exitCode;
             *retval = checkChild->pidValue;
+            splx(s);
             return 0;
-            kprintf("I am gonna wait for child \n");
           }
         }
 
         else{
-          kprintf("Not a child \n");
+        //  kprintf("Not a child \n");
+          splx(s);
           *retval = -1;
-          return -1;
+          return EINVAL;
+  
         }
 
-        
-  return curthread->pidValue;
+  splx(s);
+  return EINVAL;
 }
 
 
