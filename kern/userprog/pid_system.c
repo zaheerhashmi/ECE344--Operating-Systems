@@ -2,6 +2,8 @@
 #include <pid_system.h>
 #include <lib.h>
 #include <machine/spl.h>
+#include <thread.h>
+#include <curthread.h>
 
 struct pid* create_pid_list(){
 
@@ -12,16 +14,21 @@ struct pid* create_pid_list(){
 
     //first process has pid of 1
     pid->pidValue = 1;
-
     //the pid of 1 is being used so it is unavailable
     pid->isUsed = 1;
+    // Parent pid: first thread has parent pid of 1 // 
+    pid->pPid = 0;
+    // Exit status of first thread; 0 means it hasnt exited;  // 
+    pid->didExit = 0; 
+    // This contains pointer to the first thread // 
+    pid->myThread = curthread; 
 
     pid->next = NULL;
 
     return pid;
 }
 
-void append_pid(struct pid* head, int pidValue) 
+void append_pid(struct pid* head, int pidValue,struct thread* thread) 
 {   
     int s;
     s = splhigh();
@@ -32,6 +39,9 @@ void append_pid(struct pid* head, int pidValue)
    
     new_pid->pidValue  = pidValue;
     new_pid->isUsed = 1;
+    new_pid->pPid = curthread->pidValue;
+    new_pid->myThread = thread;
+    new_pid->didExit = 0;
     new_pid->next = NULL;
        
     while (last->next != NULL) 
@@ -43,7 +53,7 @@ void append_pid(struct pid* head, int pidValue)
     return;     
 } 
 
-int assign_pid(struct pid* head){
+int assign_pid(struct pid* head,struct thread* thread){
 
     int s;
     s = splhigh();
@@ -53,7 +63,7 @@ int assign_pid(struct pid* head){
 
     while(current != NULL){
         if(next == NULL){
-            append_pid(head, current->pidValue+1);
+            append_pid(head, current->pidValue+1,thread);
             splx(s);
             return current->pidValue+1;
         }

@@ -77,7 +77,7 @@ thread_create(const char *name)
 		thread->pidValue = 1;
 	}
 	else{
-		thread->pidValue = assign_pid(pidHead);
+		thread->pidValue = assign_pid(pidHead,thread);
 	}
 	
 	// If you add things to the thread structure, be sure to initialize

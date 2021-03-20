@@ -226,6 +226,23 @@ int sys_fork (struct trapframe *tf, int *retval){
 
 int sys_waitpid(pid_t pid, int *status, int options, int *retval){
   // Dummy code: this function needs to be written //
+  
+  // Error Handling Code //  
+    
+      // Making sure that options is zero we dont support anyoptions//
+        if(options != 0){
+          *retval = -1;
+          return EINVAL;
+        }
+      
+      // Making sure status point is not null // 
+        if(status == NULL){
+          *retval = -1;
+          return EFAULT;
+        }
+      
+      // Only allow parent to do do waitpid for simplicity // 
+ 
   kprintf("%d,%d,%d,%d",pid,*status,options,*retval);
   return curthread->pidValue;
 }
