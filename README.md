@@ -6,6 +6,9 @@ os-161, presumably for the ece344 course offered by University of Toronto. We
 continue to make changes to the start code to make it easier for students to
 design and test their implementation.
 
+Project Highlights
+-------------
+
 major updates
 -------------
 
@@ -36,7 +39,7 @@ assignment 2
 * catsem or catlock
 * stoplight
 
-assignment 3
+assignment 3 (OS 161 - System Call Library)
 ------------
 
 ### Deliverables
